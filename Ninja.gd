@@ -1,0 +1,30 @@
+extends Node2D
+
+const MODE_IDLE = 0
+const MODE_RUNNING = 1
+
+var mode
+var looking_right
+
+# Called when the node enters the scene tree for the first time.
+func _ready():
+	mode = MODE_IDLE
+	looking_right = true
+
+func look_right():
+	get_node("AnimatedSprite").flip_h = false
+	looking_right = true
+
+func look_left():
+	get_node("AnimatedSprite").flip_h = true	
+	looking_right = false
+
+func go_idle():
+	mode = MODE_IDLE
+	get_node("AnimatedSprite").play("idle")
+	
+
+func go_running():
+	if mode == MODE_IDLE:
+		mode = MODE_RUNNING
+		get_node("AnimatedSprite").play("running")

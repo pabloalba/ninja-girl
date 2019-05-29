@@ -14,9 +14,15 @@ func _process(delta):
 func process_player_input(delta):
 	if Input.is_action_pressed("ui_right"):
 		ninja.position.x += delta * NINJA_SPEED
+		ninja.look_right()
+		ninja.go_running()
 		if ninja.position.x >=9400:
 			ninja.position.x = 9400
 	elif Input.is_action_pressed("ui_left"):
 		ninja.position.x -= delta * NINJA_SPEED
+		ninja.look_left()
+		ninja.go_running()
 		if ninja.position.x <=0:
 			ninja.position.x = 0
+	else:
+		ninja.go_idle()
