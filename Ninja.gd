@@ -2,9 +2,11 @@ extends Node2D
 
 const MODE_IDLE = 0
 const MODE_RUNNING = 1
+const MODE_ATTACKING = 3
 
 var mode
 var looking_right
+
 
 # Called when the node enters the scene tree for the first time.
 func _ready():
@@ -22,6 +24,11 @@ func look_left():
 func go_idle():
 	mode = MODE_IDLE
 	get_node("AnimatedSprite").play("idle")
+		
+func go_attacking():
+	if mode == MODE_IDLE:
+		mode = MODE_ATTACKING
+		get_node("AnimatedSprite").play("attack")
 	
 
 func go_running():
