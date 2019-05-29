@@ -1,0 +1,29 @@
+[gd_scene load_steps=12 format=2]
+
+[ext_resource path="res://resources/images/ninja/Run__000.png" type="Texture" id=1]
+[ext_resource path="res://resources/images/ninja/Run__001.png" type="Texture" id=2]
+[ext_resource path="res://resources/images/ninja/Run__002.png" type="Texture" id=3]
+[ext_resource path="res://resources/images/ninja/Run__003.png" type="Texture" id=4]
+[ext_resource path="res://resources/images/ninja/Run__004.png" type="Texture" id=5]
+[ext_resource path="res://resources/images/ninja/Run__005.png" type="Texture" id=6]
+[ext_resource path="res://resources/images/ninja/Run__006.png" type="Texture" id=7]
+[ext_resource path="res://resources/images/ninja/Run__007.png" type="Texture" id=8]
+[ext_resource path="res://resources/images/ninja/Run__008.png" type="Texture" id=9]
+[ext_resource path="res://resources/images/ninja/Run__009.png" type="Texture" id=10]
+
+[sub_resource type="SpriteFrames" id=1]
+animations = [ {
+"frames": [ ExtResource( 1 ), ExtResource( 2 ), ExtResource( 3 ), ExtResource( 4 ), ExtResource( 5 ), ExtResource( 6 ), ExtResource( 7 ), ExtResource( 8 ), ExtResource( 9 ), ExtResource( 10 ) ],
+"loop": true,
+"name": "running",
+"speed": 20.0
+} ]
+
+[node name="Ninja" type="Node2D"]
+
+[node name="AnimatedSprite" type="AnimatedSprite" parent="."]
+frames = SubResource( 1 )
+animation = "running"
+frame = 7
+playing = true
+
