@@ -1,7 +1,11 @@
 extends Node2D
 
 const NINJA_SPEED = 1000
+var ZOMBIE_SPEED = 300
 const ATTACKING_TIME = 0.4
+const COLLISION_MARGIN = 100
+const MAX_ZOMBIE_BOUNCING_TIME = 0.25
+
 var ninja
 var remaining_attacking_time = 0
 var zombies
@@ -15,6 +19,39 @@ func _ready():
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(delta):
 	process_player_input(delta)
+	process_zombies(delta)
+	
+func process_zombies(delta):
+	for zombie in zombies:
+		process_zombie(zombie, delta)
+		
+func process_zombie(zombie, delta):
+	if zombie.mode == zombie.MODE_BOUNCING:
+		if zombie.bouncing_time >= MAX_ZOMBIE_BOUNCING_TIME:
+			zombie.go_running()
+	
+	if abs (zombie.position.x - ninja.position.x) < 2000:
+		if zombie.position.x < ninja.position.x:
+			zombie.look_right()
+			if zombie.mode != zombie.MODE_BOUNCING:
+				zombie.position.x += delta * ZOMBIE_SPEED
+			else:
+				zombie.position.x -= delta * (ZOMBIE_SPEED * 2)
+		if zombie.position.x > ninja.position.x:
+			zombie.look_left()
+			if zombie.mode != zombie.MODE_BOUNCING:
+				zombie.position.x -= delta * ZOMBIE_SPEED
+			else:
+				zombie.position.x += delta * (ZOMBIE_SPEED * 2)
+			
+		if check_zombie_collision(zombie):
+			hit_ninja(zombie)
+			
+func check_zombie_collision(zombie):
+	return abs(zombie.position.x - ninja.position.x) < COLLISION_MARGIN
+	
+func hit_ninja(zombie):
+	zombie.go_bouncing()
 	
 func add_zombie(x, y):
 	var zombie = load("res://Zombie.tscn").instance()
