@@ -1,7 +1,7 @@
 extends Node2D
 
 const NINJA_SPEED = 1000
-var ZOMBIE_SPEED = 300
+var ZOMBIE_SPEED = 30
 const ATTACKING_TIME = 0.4
 const COLLISION_MARGIN = 100
 const COLLISION_MARGIN_SWORD = 200
@@ -87,8 +87,9 @@ func check_zombie_collision(zombie, collision_margin):
 func hit_ninja(zombie):
 	zombie.go_bouncing()
 	if ninja_life == 1:
-		Global.is_player_win = false
-		get_tree().change_scene("res://GameOver.tscn")
+		#Global.is_player_win = false
+		#get_tree().change_scene("res://GameOver.tscn")
+		pass
 	else:
 		ninja_life -= 1
 		hearts[ninja_life].hide()
