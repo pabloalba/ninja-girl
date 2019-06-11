@@ -12,11 +12,14 @@ var GROUND_FLOOR_Y = 445
 
 var ninja
 var zombies
+var hearts
 var ninja_is_in_first_floor = true
+var ninja_life = 3
 
 # Called when the node enters the scene tree for the first time.
 func _ready():
 	zombies = []
+	hearts = [get_node("CanvasLayer/Heart1"), get_node("CanvasLayer/Heart2"), get_node("CanvasLayer/Heart3")]
 	ninja = get_node("Ninja")
 	add_zombie(1500, FIRST_FLOOR_Y)
 	add_zombie(2800, FIRST_FLOOR_Y)
@@ -24,6 +27,7 @@ func _ready():
 	add_zombie(0, GROUND_FLOOR_Y)
 	add_zombie(3000, GROUND_FLOOR_Y)
 	add_zombie(6000, GROUND_FLOOR_Y)
+	
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(delta):
@@ -45,6 +49,9 @@ func process_dying_zombie(zombie, delta):
 	if zombie.dying_time > MAX_ZOMBIE_DYING_TIME:
 		remove_child(zombie)
 		zombies.erase(zombie)
+		if len(zombies) == 0:
+			Global.is_player_win = true
+			get_tree().change_scene("res://GameOver.tscn")
 
 func process_undead_zombie(zombie, delta):
 	if zombie.mode == zombie.MODE_BOUNCING:
@@ -79,6 +86,13 @@ func check_zombie_collision(zombie, collision_margin):
 	
 func hit_ninja(zombie):
 	zombie.go_bouncing()
+	if ninja_life == 1:
+		Global.is_player_win = false
+		get_tree().change_scene("res://GameOver.tscn")
+	else:
+		ninja_life -= 1
+		hearts[ninja_life].hide()
+		
 	
 func kill_zombie(zombie):
 	zombie.go_dying()

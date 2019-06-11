@@ -1,8 +1,10 @@
-[gd_scene load_steps=4 format=2]
+[gd_scene load_steps=6 format=2]
 
 [ext_resource path="res://Main.gd" type="Script" id=1]
 [ext_resource path="res://resources/images/background/background.png" type="Texture" id=2]
 [ext_resource path="res://Ninja.tscn" type="PackedScene" id=3]
+[ext_resource path="res://resources/images/gui/heart.png" type="Texture" id=4]
+[ext_resource path="res://resources/images/gui/heart_empty.png" type="Texture" id=5]
 
 [node name="Main" type="Node2D"]
 script = ExtResource( 1 )
@@ -28,4 +30,48 @@ drag_margin_left = 0.0
 drag_margin_top = 0.0
 drag_margin_right = 0.0
 drag_margin_bottom = 0.0
+
+[node name="CanvasLayer" type="CanvasLayer" parent="."]
+
+[node name="Heart1" type="TextureRect" parent="CanvasLayer"]
+margin_left = 960.609
+margin_top = 20.4486
+margin_right = 1010.61
+margin_bottom = 70.4486
+texture = ExtResource( 4 )
+
+[node name="Heart_Empty1" type="TextureRect" parent="CanvasLayer"]
+margin_left = 960.609
+margin_top = 20.4486
+margin_right = 1010.61
+margin_bottom = 70.4486
+texture = ExtResource( 5 )
+
+[node name="Heart2" type="TextureRect" parent="CanvasLayer"]
+margin_left = 900.609
+margin_top = 20.4486
+margin_right = 950.609
+margin_bottom = 70.4486
+texture = ExtResource( 4 )
+
+[node name="Heart_Empty2" type="TextureRect" parent="CanvasLayer"]
+margin_left = 900.609
+margin_top = 20.4486
+margin_right = 950.609
+margin_bottom = 70.4486
+texture = ExtResource( 5 )
+
+[node name="Heart3" type="TextureRect" parent="CanvasLayer"]
+margin_left = 840.609
+margin_top = 20.4486
+margin_right = 890.609
+margin_bottom = 70.4486
+texture = ExtResource( 4 )
+
+[node name="Heart_Empty3" type="TextureRect" parent="CanvasLayer"]
+margin_left = 840.609
+margin_top = 20.4486
+margin_right = 890.609
+margin_bottom = 70.4486
+texture = ExtResource( 5 )
 
