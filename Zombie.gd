@@ -7,6 +7,7 @@ const MODE_BOUNCING = 2
 var mode
 var looking_right = true
 var bouncing_time = 0
+var dying_time = 0
 
 # Called when the node enters the scene tree for the first time.
 func _ready():
@@ -16,6 +17,8 @@ func _ready():
 func _process(delta):
 	if mode == MODE_BOUNCING:
 		bouncing_time += delta
+	elif mode == MODE_DYING:
+		dying_time += delta
 	
 func look_right():
 	get_node("AnimatedSprite").flip_h = false
@@ -28,6 +31,7 @@ func look_left():
 func go_dying():
 	if mode == MODE_RUNNING:
 		mode = MODE_DYING
+		dying_time = 0
 		get_node("AnimatedSprite").play("dying")
 	
 func go_bouncing():

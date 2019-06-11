@@ -4,10 +4,11 @@ const NINJA_SPEED = 1000
 var ZOMBIE_SPEED = 300
 const ATTACKING_TIME = 0.4
 const COLLISION_MARGIN = 100
+const COLLISION_MARGIN_SWORD = 200
 const MAX_ZOMBIE_BOUNCING_TIME = 0.25
+const MAX_ZOMBIE_DYING_TIME = 3
 
 var ninja
-var remaining_attacking_time = 0
 var zombies
 
 # Called when the node enters the scene tree for the first time.
@@ -26,6 +27,17 @@ func process_zombies(delta):
 		process_zombie(zombie, delta)
 		
 func process_zombie(zombie, delta):
+	if zombie.mode == zombie.MODE_DYING:
+		process_dying_zombie(zombie, delta)
+	else:
+		process_undead_zombie(zombie, delta)
+		
+func process_dying_zombie(zombie, delta):	
+	if zombie.dying_time > MAX_ZOMBIE_DYING_TIME:
+		remove_child(zombie)
+		zombies.erase(zombie)
+
+func process_undead_zombie(zombie, delta):
 	if zombie.mode == zombie.MODE_BOUNCING:
 		if zombie.bouncing_time >= MAX_ZOMBIE_BOUNCING_TIME:
 			zombie.go_running()
@@ -44,14 +56,21 @@ func process_zombie(zombie, delta):
 			else:
 				zombie.position.x += delta * (ZOMBIE_SPEED * 2)
 			
-		if check_zombie_collision(zombie):
+		if (zombie.looking_right != ninja.looking_right and 
+			ninja.mode == ninja.MODE_ATTACKING and
+			check_zombie_collision(zombie, COLLISION_MARGIN_SWORD)):
+				kill_zombie(zombie)
+		elif check_zombie_collision(zombie, COLLISION_MARGIN):
 			hit_ninja(zombie)
 			
-func check_zombie_collision(zombie):
-	return abs(zombie.position.x - ninja.position.x) < COLLISION_MARGIN
+func check_zombie_collision(zombie, collision_margin):
+	return abs(zombie.position.x - ninja.position.x) < collision_margin
 	
 func hit_ninja(zombie):
 	zombie.go_bouncing()
+	
+func kill_zombie(zombie):
+	zombie.go_dying()
 	
 func add_zombie(x, y):
 	var zombie = load("res://Zombie.tscn").instance()
@@ -62,8 +81,7 @@ func add_zombie(x, y):
 
 func process_player_input(delta):
 	if ninja.mode == ninja.MODE_ATTACKING:
-		remaining_attacking_time -= delta
-		if remaining_attacking_time <=0 :
+		if ninja.attacking_time > ATTACKING_TIME:
 			ninja.go_idle()
 	else:
 		if Input.is_action_pressed("ui_right"):
@@ -80,6 +98,5 @@ func process_player_input(delta):
 				ninja.position.x = 0
 		elif Input.is_action_pressed("ui_accept"):
 				ninja.go_attacking()
-				remaining_attacking_time = ATTACKING_TIME
 		else:
 			ninja.go_idle()

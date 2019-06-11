@@ -6,12 +6,17 @@ const MODE_ATTACKING = 3
 
 var mode
 var looking_right
+var attacking_time = 0
 
 
 # Called when the node enters the scene tree for the first time.
 func _ready():
 	mode = MODE_IDLE
 	looking_right = true
+	
+func _process(delta):
+	if mode == MODE_ATTACKING:
+		attacking_time += delta
 
 func look_right():
 	get_node("AnimatedSprite").flip_h = false
@@ -28,6 +33,7 @@ func go_idle():
 func go_attacking():
 	if mode == MODE_IDLE:
 		mode = MODE_ATTACKING
+		attacking_time = 0
 		get_node("AnimatedSprite").play("attack")
 	
 
