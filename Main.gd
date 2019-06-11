@@ -7,19 +7,28 @@ const COLLISION_MARGIN = 100
 const COLLISION_MARGIN_SWORD = 200
 const MAX_ZOMBIE_BOUNCING_TIME = 0.25
 const MAX_ZOMBIE_DYING_TIME = 3
+var FIRST_FLOOR_Y = 190
+var GROUND_FLOOR_Y = 445
 
 var ninja
 var zombies
+var ninja_is_in_first_floor = true
 
 # Called when the node enters the scene tree for the first time.
 func _ready():
 	zombies = []
 	ninja = get_node("Ninja")
-	add_zombie(800, 200)
+	add_zombie(1500, FIRST_FLOOR_Y)
+	add_zombie(2800, FIRST_FLOOR_Y)
+	add_zombie(4000, FIRST_FLOOR_Y)
+	add_zombie(0, GROUND_FLOOR_Y)
+	add_zombie(3000, GROUND_FLOOR_Y)
+	add_zombie(6000, GROUND_FLOOR_Y)
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(delta):
 	process_player_input(delta)
+	process_ninja(delta)	
 	process_zombies(delta)
 	
 func process_zombies(delta):
@@ -64,7 +73,9 @@ func process_undead_zombie(zombie, delta):
 			hit_ninja(zombie)
 			
 func check_zombie_collision(zombie, collision_margin):
-	return abs(zombie.position.x - ninja.position.x) < collision_margin
+	return (abs(zombie.position.y - ninja.position.y) < collision_margin &&
+		abs(zombie.position.x - ninja.position.x) < collision_margin)
+		
 	
 func hit_ninja(zombie):
 	zombie.go_bouncing()
@@ -75,15 +86,12 @@ func kill_zombie(zombie):
 func add_zombie(x, y):
 	var zombie = load("res://Zombie.tscn").instance()
 	zombie.position.x = x
-	zombie.position.y = y
+	zombie.position.y = y + 10 # Little hack for visual improvement
 	zombies.append(zombie)
 	add_child(zombie)
 
 func process_player_input(delta):
-	if ninja.mode == ninja.MODE_ATTACKING:
-		if ninja.attacking_time > ATTACKING_TIME:
-			ninja.go_idle()
-	else:
+	if ninja.mode != ninja.MODE_ATTACKING && ninja.mode != ninja.MODE_JUMPING:
 		if Input.is_action_pressed("ui_right"):
 			ninja.position.x += delta * NINJA_SPEED
 			ninja.look_right()
@@ -98,5 +106,26 @@ func process_player_input(delta):
 				ninja.position.x = 0
 		elif Input.is_action_pressed("ui_accept"):
 				ninja.go_attacking()
+		elif Input.is_action_pressed("ui_up"):		
+			ninja.go_jumping()
+		elif Input.is_action_pressed("ui_down"):		
+			ninja.go_jumping()
 		else:
 			ninja.go_idle()
+			
+func process_ninja(delta):
+	if ninja.mode == ninja.MODE_ATTACKING && ninja.attacking_time > ATTACKING_TIME:
+		ninja.go_idle()
+	if ninja.mode == ninja.MODE_JUMPING:
+		if ninja_is_in_first_floor:
+			ninja.position.y += delta * NINJA_SPEED
+			if ninja.position.y >= GROUND_FLOOR_Y:
+				ninja.position.y = GROUND_FLOOR_Y
+				ninja_is_in_first_floor = false
+				ninja.go_idle()
+		else:
+			ninja.position.y -= delta * NINJA_SPEED
+			if ninja.position.y <= FIRST_FLOOR_Y:
+				ninja.position.y = FIRST_FLOOR_Y
+				ninja_is_in_first_floor = true
+				ninja.go_idle()

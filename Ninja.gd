@@ -3,10 +3,12 @@ extends Node2D
 const MODE_IDLE = 0
 const MODE_RUNNING = 1
 const MODE_ATTACKING = 3
+const MODE_JUMPING = 4
 
 var mode
 var looking_right
 var attacking_time = 0
+var jumping_time = 0
 
 
 # Called when the node enters the scene tree for the first time.
@@ -17,6 +19,8 @@ func _ready():
 func _process(delta):
 	if mode == MODE_ATTACKING:
 		attacking_time += delta
+	elif mode == MODE_JUMPING:
+		jumping_time += delta
 
 func look_right():
 	get_node("AnimatedSprite").flip_h = false
@@ -35,9 +39,14 @@ func go_attacking():
 		mode = MODE_ATTACKING
 		attacking_time = 0
 		get_node("AnimatedSprite").play("attack")
-	
 
 func go_running():
 	if mode == MODE_IDLE:
 		mode = MODE_RUNNING
 		get_node("AnimatedSprite").play("running")
+
+func go_jumping():
+	if mode == MODE_IDLE:
+		mode = MODE_JUMPING
+		jumping_time = 0
+		get_node("AnimatedSprite").play("jumping")
